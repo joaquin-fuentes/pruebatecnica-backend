@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken"
 
-const generarJWT = (uid, nombre) =>{
+const generarJWT = (uid, username) =>{
     return new Promise((resolve,reject)=>{
         //agregar los datos al payload
 
-const payload = {uid, nombre}    
+const payload = {uid, username}    
 //aqui firmamos el token)
 jwt.sign(payload, process.env.SECRET_JWT,{
     expiresIn:"3h"

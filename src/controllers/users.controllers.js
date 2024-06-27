@@ -1,47 +1,49 @@
-// import generarJWT from "../helpers/token-sign";
-import User from "../models/user"
+import generarJWT from "../helpers/token.sign";
+import User from "../models/user";
 
-
-
-//LOGIN
+// LOGIN
 export const login = async (req, res) => {
-    try {
-      //verificar si existe un mail como el recibido
-      const { username, password } = req.body;
-  
-      //verificar si el email ya existe
-      let user = await User.findOne({ username }); //devulve un null
-      if (!user) {
-        //si el user existe
-        return res.status(400).json({
-          mensaje: "username or password invalid - username",
-        });
-      }
-      // si no es valido el password
-      if (password !== usuario.password) {
-        return res.status(400).json({
-          mensaje: "username or password invalid - password",
-        });
-      }
-      
-      // generar el token
-    //   const token = await generarJWT(user._id, user.username)
+  try {
+    const { username, password } = req.body;
 
-      //responder que el usuario es correcto
-      res.status(200).json({
-        mensaje: "El usuario existe",
-        uid: user._id,
-        nombre: user.username
-        // token: token
-      });
-      res.send(user)
-    } catch (error) {
-      console.log(error);
-      res.status(400).json({
-        mensaje: "user or password invalid",
+    // Verificar si el usuario existe
+    let user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({
+        mensaje: "username or password invalid - username",
       });
     }
-  };
+
+    // Verificar si la contraseña es válida
+    if (password !== user.password) {
+      return res.status(400).json({
+        mensaje: "username or password invalid - password",
+      });
+    }
+
+    // Generar el token
+    const token = await generarJWT(user._id, user.username);
+
+    // Responder que el usuario es correcto
+    res.status(200).json({
+      mensaje: "El usuario existe",
+      uid: user._id,
+      nombre: user.username,
+      role: user.role,
+      token: token
+    });
+
+    // No necesitas esta línea, ya que ya has enviado una respuesta
+    // res.send(user);
+
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      mensaje: "user or password invalid",
+    });
+  }
+};
+
 
 //Controlador para obtener usuarios
 
